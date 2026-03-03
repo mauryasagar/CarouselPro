@@ -349,12 +349,12 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
           {/* Title */}
           <div
           className={`
-            absolute text-[60px] leading-tight font-bold pointer-events-auto
-            max-w-[80%] outline-none border-2 border-transparent rounded-lg p-2
-            ${onUpdate ? 'hover:border-white/20 cursor-move touch-none' : ''}
+            absolute text-[60px] leading-[1.1] font-black pointer-events-auto
+            max-w-[85%] outline-none border-2 border-transparent rounded-xl p-3
+            ${onUpdate ? 'hover:border-white/30 cursor-move touch-none' : ''}
             ${getAlignmentClasses('title')}
             empty:before:content-['Title'] empty:before:opacity-30
-            z-10
+            z-10 drop-shadow-2xl
           `}
           contentEditable={!!onUpdate}
           suppressContentEditableWarning
@@ -376,12 +376,12 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
           {/* Body */}
           <div
           className={`
-            absolute text-[40px] leading-snug font-medium opacity-90 pointer-events-auto
-            max-w-[80%] outline-none border-2 border-transparent rounded-lg p-2
-            ${onUpdate ? 'hover:border-white/20 cursor-move touch-none' : ''}
+            absolute text-[40px] leading-[1.4] font-semibold opacity-95 pointer-events-auto
+            max-w-[85%] outline-none border-2 border-transparent rounded-xl p-3
+            ${onUpdate ? 'hover:border-white/30 cursor-move touch-none' : ''}
             ${getAlignmentClasses('body')}
             empty:before:content-['Body_Text'] empty:before:opacity-30
-            z-10
+            z-10 drop-shadow-xl
           `}
           contentEditable={!!onUpdate}
           suppressContentEditableWarning

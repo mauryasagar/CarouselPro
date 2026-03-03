@@ -3,6 +3,23 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-primary: #7c3aed;
+  --color-brand-secondary: #f97316;
+}
+
+@layer utilities {
+  .bg-mesh {
+    background-color: #ffffff;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+  }
+  
+  .bg-glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
 }
 
 html {

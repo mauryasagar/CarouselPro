@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { generatePDF } from './lib/pdf';
 import { Slide } from './components/Slide';
 import { DesignSettings, DIMENSIONS, TEMPLATES, TemplateType, AspectRatio, TextLayout, SlideType, SlideContent, TextStyle } from './lib/types';
@@ -216,9 +217,9 @@ export default function App() {
   const thumbnailScale = thumbnailWidth / DIMENSIONS[settings.ratio].width;
 
   return (
-    <div className="min-h-screen md:h-screen flex flex-col bg-gray-100 text-gray-900 font-sans md:overflow-hidden">
+    <div className="min-h-screen md:h-screen flex flex-col bg-mesh text-gray-900 font-sans md:overflow-hidden">
       {/* Top Bar */}
-      <header className="relative h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-20">
+      <header className="relative h-14 bg-glass border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-20">
         <div className="flex items-center gap-2">
           <div className="relative w-8 h-8 flex items-center justify-center">
             {/* Background Card */}
@@ -234,19 +235,25 @@ export default function App() {
         </div>
         
         <div className="flex items-center gap-4">
-          <a 
-            href="https://buymeacoffee.com/insidedeepquote" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hover:opacity-90 transition-opacity"
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <img 
-              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
-              alt="Buy Me A Coffee" 
-              className="h-8"
-              referrerPolicy="no-referrer"
-            />
-          </a>
+            <a 
+              href="https://buymeacoffee.com/insidedeepquote" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:opacity-90 transition-opacity block"
+            >
+              <img 
+                src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+                alt="Buy Me A Coffee" 
+                className="h-8"
+                referrerPolicy="no-referrer"
+              />
+            </a>
+          </motion.div>
         </div>
       </header>
 
@@ -262,27 +269,41 @@ export default function App() {
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
-              className="h-[60vh] md:flex-1 bg-gray-100 flex flex-col items-center justify-center p-4 md:p-8 overflow-hidden relative transition-colors"
+              className="h-[60vh] md:flex-1 bg-mesh flex flex-col items-center justify-center p-4 md:p-8 overflow-hidden relative transition-colors"
             >
               {/* Navigation Arrows */}
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.1, x: -5 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handlePrevSlide}
                 disabled={activeSlideIndex === 0}
-                className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/50 hover:bg-white text-gray-400 hover:text-gray-900 shadow-sm transition-all disabled:opacity-0 disabled:pointer-events-none z-10 backdrop-blur-sm"
+                className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-glass text-gray-400 hover:text-purple-600 shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none z-10"
               >
                 <ChevronLeft className="w-6 h-6" />
-              </button>
+              </motion.button>
 
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.1, x: 5 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handleNextSlide}
                 disabled={activeSlideIndex === slides.length - 1}
-                className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/50 hover:bg-white text-gray-400 hover:text-gray-900 shadow-sm transition-all disabled:opacity-0 disabled:pointer-events-none z-10 backdrop-blur-sm"
+                className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-glass text-gray-400 hover:text-purple-600 shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none z-10"
               >
                 <ChevronRight className="w-6 h-6" />
-              </button>
+              </motion.button>
 
               {activeSlide && (
-                <div className="relative shadow-2xl transition-all duration-300">
+                <motion.div 
+                  key={activeSlide.id}
+                  initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, x: -20 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  className="relative shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-all duration-300"
+                >
+                   {/* Glow effect behind slide */}
+                   <div className="absolute -inset-4 bg-gradient-to-br from-purple-500/20 to-orange-500/20 blur-3xl -z-10 rounded-full opacity-50"></div>
+                   
                    {/* Render Active Slide */}
                    <Slide 
                      slide={activeSlide} 
@@ -297,7 +318,7 @@ export default function App() {
                      onUpdate={handleUpdateSlide}
                      onUpdateSettings={handleUpdateSettings}
                    />
-                </div>
+                </motion.div>
               )}
               
               {/* Pagination Indicator */}
@@ -306,25 +327,75 @@ export default function App() {
               </div>
             </div>
 
+            {/* 2. Bottom Strip: Thumbnails */}
+            <div className="h-24 bg-glass border-t border-gray-200 flex items-center gap-3 px-6 overflow-x-auto shrink-0 scrollbar-hide">
+              {slides.map((slide, index) => (
+                <motion.button
+                  key={slide.id}
+                  whileHover={{ y: -4 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveSlideId(slide.id)}
+                  className={`
+                    relative shrink-0 w-16 h-20 rounded-lg border-2 transition-all overflow-hidden shadow-sm
+                    ${activeSlideId === slide.id ? 'border-purple-600 ring-2 ring-purple-500/20' : 'border-gray-200 hover:border-gray-300'}
+                  `}
+                >
+                  <div className="absolute inset-0 bg-white flex items-center justify-center">
+                    {/* Tiny Preview */}
+                    <div 
+                      className="origin-center"
+                      style={{ 
+                        transform: `scale(${16 / DIMENSIONS[settings.ratio].width * 4})`,
+                        width: DIMENSIONS[settings.ratio].width,
+                        height: DIMENSIONS[settings.ratio].height,
+                        background: TEMPLATES[settings.template].bg
+                      }}
+                    >
+                      <div className="p-20 flex flex-col items-center justify-center h-full">
+                        <div className="w-full h-20 bg-gray-200 rounded mb-10"></div>
+                        <div className="w-2/3 h-10 bg-gray-100 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 inset-x-0 bg-black/50 text-[8px] font-bold text-white py-0.5 text-center">
+                    {index + 1}
+                  </div>
+                </motion.button>
+              ))}
+              <button 
+                onClick={handleAddSlide}
+                className="shrink-0 w-16 h-20 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-1 text-gray-400 hover:border-purple-400 hover:text-purple-600 transition-all bg-white/50"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="text-[8px] font-bold">Add</span>
+              </button>
+            </div>
+
         </div>
 
         {/* 3. Right Sidebar: Editor Panel */}
-        <div className="w-full md:w-1/3 bg-white border-t md:border-t-0 md:border-l border-gray-200 flex flex-col md:shrink-0 relative md:overflow-hidden">
+        <div className="w-full md:w-1/3 bg-glass border-t md:border-t-0 md:border-l border-gray-200 flex flex-col md:shrink-0 relative md:overflow-hidden shadow-2xl">
           <div className="md:flex-1 md:overflow-y-auto flex flex-col">
             <div className="flex-1">
               {activeSlide ? (
-                <div className="p-3 space-y-3">
+                <div className="p-4 space-y-4">
                   
                   {/* Header Actions */}
-                  <div className="flex items-center justify-between relative bg-white z-10 pb-2 border-b border-gray-100">
-                    <h3 className="font-semibold text-xs text-gray-500 uppercase tracking-wider">Slide {activeSlideIndex + 1}</h3>
-                    <div className="flex items-center gap-0.5">
-                      <button onClick={handleAddSlide} className="p-1.5 text-gray-600 hover:bg-black hover:text-white rounded-md transition-colors" title="Add New Slide"><Plus className="w-3.5 h-3.5" /></button>
-                      <div className="w-px h-3 bg-gray-200 mx-1"></div>
-                      <button onClick={() => handleMoveSlide('up')} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md" title="Move Up"><ChevronUp className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => handleMoveSlide('down')} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md" title="Move Down"><ChevronDown className="w-3.5 h-3.5" /></button>
-                      <button onClick={handleDuplicateSlide} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md" title="Duplicate"><Copy className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => handleDeleteSlide(activeSlide.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-md" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <div className="flex items-center justify-between relative z-10 pb-3 border-b border-gray-100">
+                    <div className="flex flex-col">
+                      <h3 className="font-bold text-[10px] text-gray-400 uppercase tracking-[0.2em]">Slide Editor</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-black text-gray-900">{activeSlideIndex + 1}</span>
+                        <div className="h-1 w-8 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
+                      <button onClick={handleAddSlide} className="p-2 text-white bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg shadow-md hover:shadow-purple-500/20 transition-all" title="Add New Slide"><Plus className="w-4 h-4" /></button>
+                      <div className="w-px h-4 bg-gray-300 mx-1"></div>
+                      <button onClick={() => handleMoveSlide('up')} className="p-2 text-gray-500 hover:bg-white hover:text-black rounded-lg transition-all" title="Move Up"><ChevronUp className="w-4 h-4" /></button>
+                      <button onClick={() => handleMoveSlide('down')} className="p-2 text-gray-500 hover:bg-white hover:text-black rounded-lg transition-all" title="Move Down"><ChevronDown className="w-4 h-4" /></button>
+                      <button onClick={handleDuplicateSlide} className="p-2 text-gray-500 hover:bg-white hover:text-black rounded-lg transition-all" title="Duplicate"><Copy className="w-4 h-4" /></button>
+                      <button onClick={() => handleDeleteSlide(activeSlide.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Delete"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </div>
 
@@ -334,21 +405,25 @@ export default function App() {
                      <div className="relative" ref={templateMenuRef}>
                         <button
                           onClick={() => setIsTemplateMenuOpen(!isTemplateMenuOpen)}
-                          className="w-full flex items-center justify-between gap-2 px-2 py-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all text-xs font-medium"
+                          className="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-white/50 border border-gray-200 rounded-xl hover:bg-white hover:border-purple-300 transition-all text-xs font-bold shadow-sm"
                         >
                           <div className="flex items-center gap-2 truncate">
                             <div 
-                              className="w-2.5 h-2.5 rounded-full border border-gray-200 shadow-sm shrink-0" 
-                              style={{ backgroundColor: TEMPLATES[settings.template].bg }}
+                              className="w-3 h-3 rounded-full border border-gray-200 shadow-sm shrink-0" 
+                              style={{ background: TEMPLATES[settings.template].bg }}
                             ></div>
-                            <span className="truncate">{TEMPLATES[settings.template].label}</span>
+                            <span className="truncate text-gray-700">{TEMPLATES[settings.template].label}</span>
                           </div>
-                          <ChevronDown className={`w-3 h-3 text-gray-400 shrink-0 transition-transform ${isTemplateMenuOpen ? 'rotate-180' : ''}`} />
+                          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${isTemplateMenuOpen ? 'rotate-180' : ''}`} />
                         </button>
 
                         {/* Template Dropdown */}
                         {isTemplateMenuOpen && (
-                          <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-gray-100 p-1 z-50 max-h-[300px] overflow-y-auto grid grid-cols-1 gap-0.5">
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="absolute top-full left-0 mt-2 w-56 bg-glass rounded-2xl shadow-2xl border border-white/20 p-1.5 z-50 max-h-[350px] overflow-y-auto grid grid-cols-1 gap-1"
+                          >
                             {(Object.entries(TEMPLATES) as [TemplateType, typeof TEMPLATES[TemplateType]][]).map(([key, template]) => (
                               <button
                                 key={key}
@@ -359,16 +434,16 @@ export default function App() {
                                 }}
                                 onMouseEnter={() => setHoveredTemplate(key)}
                                 onMouseLeave={() => setHoveredTemplate(null)}
-                                className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-left transition-all ${settings.template === key ? 'bg-gray-100 ring-1 ring-black/5' : 'hover:bg-gray-50'}`}
+                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-left transition-all ${settings.template === key ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'hover:bg-white/50 text-gray-700'}`}
                               >
                                 <div 
-                                  className="w-3 h-3 rounded border border-gray-200 shadow-sm shrink-0 relative overflow-hidden"
-                                  style={{ backgroundColor: template.bg }}
+                                  className="w-4 h-4 rounded-full border border-white/20 shadow-sm shrink-0 relative overflow-hidden"
+                                  style={{ background: template.bg }}
                                 ></div>
-                                <span className="text-xs font-medium text-gray-900 truncate">{template.label}</span>
+                                <span className="text-xs font-bold truncate">{template.label}</span>
                               </button>
                             ))}
-                          </div>
+                          </motion.div>
                         )}
                      </div>
 
@@ -376,14 +451,18 @@ export default function App() {
                      <div className="relative" ref={ratioMenuRef}>
                         <button
                           onClick={() => setIsRatioMenuOpen(!isRatioMenuOpen)}
-                          className="w-full flex items-center justify-between gap-2 px-2 py-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all text-xs font-medium"
+                          className="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-white/50 border border-gray-200 rounded-xl hover:bg-white hover:border-purple-300 transition-all text-xs font-bold shadow-sm"
                         >
-                          <span className="truncate">{DIMENSIONS[settings.ratio].label}</span>
-                          <ChevronDown className={`w-3 h-3 text-gray-400 shrink-0 transition-transform ${isRatioMenuOpen ? 'rotate-180' : ''}`} />
+                          <span className="truncate text-gray-700">{DIMENSIONS[settings.ratio].label}</span>
+                          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform ${isRatioMenuOpen ? 'rotate-180' : ''}`} />
                         </button>
 
                         {isRatioMenuOpen && (
-                          <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-100 p-1 z-50 max-h-[240px] overflow-y-auto grid grid-cols-1 gap-0.5">
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="absolute top-full left-0 mt-2 w-full bg-glass rounded-2xl shadow-2xl border border-white/20 p-1.5 z-50 max-h-[240px] overflow-y-auto grid grid-cols-1 gap-1"
+                          >
                             {Object.entries(DIMENSIONS).map(([key, { label }]) => (
                               <button
                                 key={key}
@@ -394,12 +473,13 @@ export default function App() {
                                 }}
                                 onMouseEnter={() => setHoveredRatio(key as AspectRatio)}
                                 onMouseLeave={() => setHoveredRatio(null)}
-                                className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-left transition-all ${settings.ratio === key ? 'bg-gray-100 ring-1 ring-black/5' : 'hover:bg-gray-50'}`}
+                                className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-left transition-all ${settings.ratio === key ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'hover:bg-white/50 text-gray-700'}`}
                               >
-                                <span className="text-xs font-medium text-gray-900 truncate">{label}</span>
+                                <Monitor className="w-3.5 h-3.5 shrink-0" />
+                                <span className="text-xs font-bold truncate">{label}</span>
                               </button>
                             ))}
-                          </div>
+                          </motion.div>
                         )}
                      </div>
                   </div>
@@ -421,7 +501,7 @@ export default function App() {
                           type="text"
                           value={activeSlide.title}
                           onChange={(e) => handleUpdateSlide(activeSlide.id, { title: e.target.value })}
-                          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-black focus:border-black outline-none transition-all font-semibold text-sm"
+                          className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all font-bold text-base shadow-sm"
                           placeholder="Title"
                         />
                         {showTitleStyle && (
@@ -450,7 +530,7 @@ export default function App() {
                         value={activeSlide.body}
                         onChange={(e) => handleUpdateSlide(activeSlide.id, { body: e.target.value })}
                         rows={4}
-                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-black focus:border-black outline-none transition-all resize-none text-sm flex-1"
+                        className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none text-sm flex-1 shadow-sm"
                         placeholder="Body Text"
                       />
                       {showBodyStyle && (
@@ -480,31 +560,34 @@ export default function App() {
                     </div>
                     
                     {!activeSlide.image ? (
-                      <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all group">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-200 rounded-2xl hover:bg-white hover:border-purple-300 cursor-pointer transition-all group bg-white/30">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="w-5 h-5 text-gray-400 group-hover:text-black transition-colors mb-2" />
-                          <p className="text-[10px] text-gray-500 font-medium">Click to upload image</p>
+                          <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <Upload className="w-6 h-6 text-purple-600" />
+                          </div>
+                          <p className="text-xs text-gray-500 font-bold">Drop image or click to upload</p>
+                          <p className="text-[10px] text-gray-400 mt-1">Supports JPG, PNG, WebP</p>
                         </div>
                         <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
                       </label>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {/* Layer Toggle */}
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 flex bg-gray-100 rounded-lg p-1">
+                          <div className="flex-1 flex bg-gray-100/50 rounded-xl p-1 border border-gray-200/50">
                             <button 
                               onClick={() => handleUpdateSlide(activeSlide.id, { imageLayer: 'back' })}
-                              className={`flex-1 flex items-center justify-center gap-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${activeSlide.imageLayer === 'back' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${activeSlide.imageLayer === 'back' ? 'bg-white shadow-md text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
                             >
-                              <Layers className="w-3 h-3" />
-                              Back
+                              <Layers className="w-3.5 h-3.5" />
+                              Back Layer
                             </button>
                             <button 
                               onClick={() => handleUpdateSlide(activeSlide.id, { imageLayer: 'front' })}
-                              className={`flex-1 flex items-center justify-center gap-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${activeSlide.imageLayer === 'front' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${activeSlide.imageLayer === 'front' ? 'bg-white shadow-md text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
                             >
-                              <Layers className="w-3 h-3" />
-                              Front
+                              <Layers className="w-3.5 h-3.5" />
+                              Front Layer
                             </button>
                           </div>
                         </div>
@@ -517,12 +600,12 @@ export default function App() {
                     <button
                       onClick={handleExport}
                       disabled={slides.length === 0 || isExporting}
-                      className="w-auto min-w-[160px] flex items-center justify-center gap-2 px-6 py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 transition-all text-xs font-bold shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-orange-500 text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm font-bold shadow-lg shadow-purple-500/20"
                     >
-                      {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                      {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                       {isExporting ? 'Exporting...' : 'Export PDF'}
                     </button>
-                    <p className="text-[9px] text-gray-400 text-center mt-2">
+                    <p className="text-[10px] text-gray-400 text-center mt-2">
                       All slides as a single PDF
                     </p>
                   </div>

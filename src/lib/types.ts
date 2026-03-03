@@ -2,7 +2,8 @@ export type TemplateType =
   | 'minimalist' | 'bold' | 'professional' | 'creative' | 'corporate' 
   | 'elegant' | 'vibrant' | 'nature' | 'dark' | 'retro' | 'tech' | 'warm' | 'luxury'
   | 'sunset' | 'ocean' | 'forest' | 'berry' | 'slate' | 'midnight' | 'dawn' | 'dusk' | 'neon' | 'pastel' | 'earth' | 'sky' | 'fire' | 'ice' | 'sand' | 'stone' | 'cloud' | 'leaf' | 'rose' | 'gold' | 'silver' | 'bronze' | 'copper' | 'steel' | 'iron' | 'coal' | 'snow' | 'rain' | 'storm' | 'mist' | 'fog' | 'haze' | 'smoke' | 'ash' | 'dust' | 'clay' | 'mud' | 'dirt' | 'grass' | 'moss' | 'fern' | 'pine' | 'oak' | 'maple' | 'birch' | 'cedar' | 'willow' | 'palm' | 'cactus' | 'bamboo' | 'reed' | 'lotus' | 'lily' | 'tulip' | 'daisy' | 'poppy' | 'sunflower' | 'violet' | 'orchid' | 'iris' | 'jasmine' | 'lavender' | 'mint' | 'basil' | 'sage' | 'thyme' | 'rosemary' | 'dill' | 'cumin' | 'curry' | 'chili' | 'pepper' | 'salt' | 'sugar' | 'honey' | 'lemon' | 'lime' | 'orange' | 'apple' | 'pear' | 'peach' | 'plum' | 'grape' | 'cherry' | 'melon' | 'mango' | 'kiwi' | 'papaya' | 'guava' | 'fig' | 'date' | 'nut' | 'seed' | 'grain'
-  | 'cyberpunk' | 'minimal_dark' | 'royal' | 'eco' | 'brutalist' | 'gradient_mesh';
+  | 'cyberpunk' | 'minimal_dark' | 'royal' | 'eco' | 'brutalist' | 'gradient_mesh'
+  | 'aurora' | 'cosmic' | 'candy' | 'ocean_deep' | 'forest_mist';
 
 export type AspectRatio = 
   | 'ratio_1_1' | 'ratio_4_5' | 'ratio_9_16' | 'ratio_16_9' 
@@ -173,4 +174,9 @@ export const TEMPLATES: Record<TemplateType, { label: string; bg: string; text: 
   eco: { label: 'Eco Friendly', bg: '#f0fdf4', text: '#166534', accent: '#86efac', font: 'font-sans' },
   brutalist: { label: 'Brutalist', bg: '#ffffff', text: '#000000', accent: '#000000', font: 'font-mono' },
   gradient_mesh: { label: 'Mesh Gradient', bg: 'radial-gradient(at 0% 0%, #ff9a9e 0%, transparent 50%), radial-gradient(at 50% 0%, #fad0c4 0%, transparent 50%), radial-gradient(at 100% 0%, #fad0c4 0%, transparent 50%)', text: '#2d3436', accent: '#636e72', font: 'font-sans' },
+  aurora: { label: 'Aurora', bg: 'linear-gradient(to bottom right, #00c6ff, #0072ff)', text: '#ffffff', accent: '#e0f2fe', font: 'font-sans' },
+  cosmic: { label: 'Cosmic', bg: 'linear-gradient(to bottom right, #8e2de2, #4a00e0)', text: '#ffffff', accent: '#e9d5ff', font: 'font-serif' },
+  candy: { label: 'Candy', bg: 'linear-gradient(to bottom right, #ff9a9e, #fecfef)', text: '#831843', accent: '#fbcfe8', font: 'font-sans' },
+  ocean_deep: { label: 'Ocean Deep', bg: 'linear-gradient(to bottom right, #2b5876, #4e4376)', text: '#ffffff', accent: '#a5d8ff', font: 'font-sans' },
+  forest_mist: { label: 'Forest Mist', bg: 'linear-gradient(to bottom right, #134e5e, #71b280)', text: '#ffffff', accent: '#dcfce7', font: 'font-serif' },
 };
