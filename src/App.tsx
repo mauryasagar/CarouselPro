@@ -327,50 +327,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* 2. Bottom Strip: Thumbnails */}
-            <div className="h-24 bg-glass border-t border-gray-200 flex items-center gap-3 px-6 overflow-x-auto shrink-0 scrollbar-hide">
-              {slides.map((slide, index) => (
-                <motion.button
-                  key={slide.id}
-                  whileHover={{ y: -4 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveSlideId(slide.id)}
-                  className={`
-                    relative shrink-0 w-16 h-20 rounded-lg border-2 transition-all overflow-hidden shadow-sm
-                    ${activeSlideId === slide.id ? 'border-purple-600 ring-2 ring-purple-500/20' : 'border-gray-200 hover:border-gray-300'}
-                  `}
-                >
-                  <div className="absolute inset-0 bg-white flex items-center justify-center">
-                    {/* Tiny Preview */}
-                    <div 
-                      className="origin-center"
-                      style={{ 
-                        transform: `scale(${16 / DIMENSIONS[settings.ratio].width * 4})`,
-                        width: DIMENSIONS[settings.ratio].width,
-                        height: DIMENSIONS[settings.ratio].height,
-                        background: TEMPLATES[settings.template].bg
-                      }}
-                    >
-                      <div className="p-20 flex flex-col items-center justify-center h-full">
-                        <div className="w-full h-20 bg-gray-200 rounded mb-10"></div>
-                        <div className="w-2/3 h-10 bg-gray-100 rounded"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-black/50 text-[8px] font-bold text-white py-0.5 text-center">
-                    {index + 1}
-                  </div>
-                </motion.button>
-              ))}
-              <button 
-                onClick={handleAddSlide}
-                className="shrink-0 w-16 h-20 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-1 text-gray-400 hover:border-purple-400 hover:text-purple-600 transition-all bg-white/50"
-              >
-                <Plus className="w-4 h-4" />
-                <span className="text-[8px] font-bold">Add</span>
-              </button>
-            </div>
-
         </div>
 
         {/* 3. Right Sidebar: Editor Panel */}
@@ -383,10 +339,9 @@ export default function App() {
                   {/* Header Actions */}
                   <div className="flex items-center justify-between relative z-10 pb-3 border-b border-gray-100">
                     <div className="flex flex-col">
-                      <h3 className="font-bold text-[10px] text-gray-400 uppercase tracking-[0.2em]">Slide Editor</h3>
+                      <h3 className="font-bold text-[10px] text-gray-400 uppercase tracking-[0.2em]">Slide</h3>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-black text-gray-900">{activeSlideIndex + 1}</span>
-                        <div className="h-1 w-8 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full"></div>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
