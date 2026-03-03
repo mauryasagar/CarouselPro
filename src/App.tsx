@@ -254,7 +254,7 @@ export default function App() {
       <div className="flex-1 flex flex-col md:flex-row md:overflow-hidden relative scroll-smooth">
         
         {/* Left Column: Preview + Thumbnails */}
-        <div className="w-full md:flex-1 flex flex-col min-w-0 relative shrink-0">
+        <div className="w-full md:w-2/3 flex flex-col min-w-0 relative shrink-0">
             
             {/* 1. Center Stage: Active Slide */}
             <div 
@@ -309,7 +309,7 @@ export default function App() {
         </div>
 
         {/* 3. Right Sidebar: Editor Panel */}
-        <div className="w-full md:w-80 bg-white border-t md:border-t-0 md:border-l border-gray-200 flex flex-col md:flex-1 md:shrink-0 relative md:overflow-hidden">
+        <div className="w-full md:w-1/3 bg-white border-t md:border-t-0 md:border-l border-gray-200 flex flex-col md:shrink-0 relative md:overflow-hidden">
           <div className="md:flex-1 md:overflow-y-auto flex flex-col">
             <div className="flex-1">
               {activeSlide ? (
@@ -407,13 +407,13 @@ export default function App() {
                   {/* Text Inputs */}
                   <div className="space-y-2">
                     <div className="relative group" ref={titleStyleRef}>
-                        <div className="absolute right-2 top-2 flex items-center gap-1 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                        <div className="absolute right-2 top-2 flex items-center gap-1 transition-opacity">
                           <button 
                             onClick={() => setShowTitleStyle(!showTitleStyle)}
-                            className={`p-1 rounded hover:bg-gray-100 transition-colors ${showTitleStyle ? 'bg-gray-100 text-black' : 'text-gray-400'}`}
+                            className={`p-1.5 rounded hover:bg-gray-100 transition-colors ${showTitleStyle ? 'bg-gray-100 text-black' : 'text-black'}`}
                             title="Text Style"
                           >
-                            <Settings2 className="w-3 h-3" />
+                            <Settings2 className="w-4 h-4" />
                           </button>
                           <span className="text-[9px] text-gray-400 font-mono">{activeSlide.title.length}/60</span>
                         </div>
@@ -436,13 +436,13 @@ export default function App() {
                       </div>
 
                     <div className="relative group flex-1 flex flex-col min-h-0" ref={bodyStyleRef}>
-                      <div className="absolute right-2 top-2 flex items-center gap-1 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                      <div className="absolute right-2 top-2 flex items-center gap-1 transition-opacity">
                         <button 
                           onClick={() => setShowBodyStyle(!showBodyStyle)}
-                          className={`p-1 rounded hover:bg-gray-100 transition-colors ${showBodyStyle ? 'bg-gray-100 text-black' : 'text-gray-400'}`}
+                          className={`p-1.5 rounded hover:bg-gray-100 transition-colors ${showBodyStyle ? 'bg-gray-100 text-black' : 'text-black'}`}
                           title="Text Style"
                         >
-                          <Settings2 className="w-3 h-3" />
+                          <Settings2 className="w-4 h-4" />
                         </button>
                         <span className="text-[9px] text-gray-400 font-mono">{activeSlide.body.length}/200</span>
                       </div>

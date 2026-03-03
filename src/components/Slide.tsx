@@ -110,69 +110,6 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
     });
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!onUpdate) return;
-
-    const guides: { x?: number; y?: number }[] = [];
-    const threshold = 15;
-    const margin = 60;
-    const snapPointsX = [margin, width / 2, width - margin];
-    const snapPointsY = [margin, height / 2, height - margin];
-
-    if (e.touches.length === 2 && pinchStartDist !== null) {
-      const dist = Math.hypot(
-        e.touches[0].pageX - e.touches[1].pageX,
-        e.touches[0].pageY - e.touches[1].pageY
-      );
-      const scaleChange = dist / pinchStartDist;
-      onUpdate(slide.id, { imageScale: pinchStartScale * scaleChange });
-    } else if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      if (isDragging) {
-        const x = (touch.clientX - dragStart.x) / computedScale;
-        const y = (touch.clientY - dragStart.y) / computedScale;
-        
-        const imgWidth = (imageSize.width * (slide.imageScale || 1));
-        const imgHeight = (imageSize.height * (slide.imageScale || 1));
-        const centerX = x + imgWidth / 2;
-        const centerY = y + imgHeight / 2;
-        
-        snapPointsX.forEach(point => {
-          if (Math.abs(centerX - point) < threshold) guides.push({ x: point });
-        });
-        snapPointsY.forEach(point => {
-          if (Math.abs(centerY - point) < threshold) guides.push({ y: point });
-        });
-
-        onUpdate(slide.id, { imagePosition: { x, y } });
-      } else if (isDraggingText) {
-        const x = (touch.clientX - textDragStart.x) / computedScale;
-        const y = (touch.clientY - textDragStart.y) / computedScale;
-        
-        snapPointsX.forEach(point => {
-          if (Math.abs(x - point) < threshold) guides.push({ x: point });
-        });
-        snapPointsY.forEach(point => {
-          if (Math.abs(y - point) < threshold) guides.push({ y: point });
-        });
-
-        if (isDraggingText === 'title') {
-          onUpdate(slide.id, { titlePosition: { x, y } });
-        } else {
-          onUpdate(slide.id, { bodyPosition: { x, y } });
-        }
-      }
-    }
-    setActiveGuides(guides);
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    setIsDraggingText(null);
-    setPinchStartDist(null);
-    setActiveGuides([]);
-  };
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -193,9 +130,9 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
   }, [slide.imageScale, slide.id, onUpdate]);
 
   useEffect(() => {
-    if (!isDragging && !isResizing && !isDraggingText) return;
+    if (!isDragging && !isResizing && !isDraggingText && pinchStartDist === null) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMove = (clientX: number, clientY: number) => {
       if (!onUpdate) return;
       
       const guides: { x?: number; y?: number }[] = [];
@@ -205,8 +142,8 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
       const snapPointsY = [margin, height / 2, height - margin];
 
       if (isDragging) {
-        const x = (e.clientX - dragStart.x) / computedScale;
-        const y = (e.clientY - dragStart.y) / computedScale;
+        const x = (clientX - dragStart.x) / computedScale;
+        const y = (clientY - dragStart.y) / computedScale;
         
         const imgWidth = (imageSize.width * (slide.imageScale || 1));
         const imgHeight = (imageSize.height * (slide.imageScale || 1));
@@ -222,8 +159,8 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
 
         onUpdate(slide.id, { imagePosition: { x, y } });
       } else if (isDraggingText) {
-        const x = (e.clientX - textDragStart.x) / computedScale;
-        const y = (e.clientY - textDragStart.y) / computedScale;
+        const x = (clientX - textDragStart.x) / computedScale;
+        const y = (clientY - textDragStart.y) / computedScale;
         
         snapPointsX.forEach(point => {
           if (Math.abs(x - point) < threshold) guides.push({ x: point });
@@ -241,17 +178,9 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
         const containerRect = containerRef.current?.getBoundingClientRect();
         if (!containerRect) return;
 
-        // Get mouse position relative to the slide container
-        const mouseXInSlide = (e.clientX - containerRect.left);
-        
-        // Image top-left in slide coordinates (scaled by computedScale)
+        const mouseXInSlide = (clientX - containerRect.left);
         const imageTopLeftX = (slide.imagePosition?.x || 0) * computedScale;
-        
-        // The new width we want the image to have in the current view
         const targetWidth = Math.max(5, mouseXInSlide - imageTopLeftX);
-        
-        // Calculate the scale needed to achieve this width
-        // targetWidth = naturalWidth * imageScale * computedScale
         const naturalWidth = imageSize.width || (imageRef.current?.naturalWidth) || 100;
         const newScale = targetWidth / (naturalWidth * computedScale);
         
@@ -261,20 +190,50 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
       setActiveGuides(guides);
     };
 
-    const handleMouseUp = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      handleMove(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!onUpdate) return;
+
+      if (e.touches.length === 2 && pinchStartDist !== null) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        const scaleChange = dist / pinchStartDist;
+        onUpdate(slide.id, { imageScale: pinchStartScale * scaleChange });
+      } else if (e.touches.length === 1) {
+        // Prevent scrolling while dragging
+        e.preventDefault();
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    const handleEnd = () => {
       setIsDragging(false);
       setIsResizing(false);
       setIsDraggingText(null);
+      setPinchStartDist(null);
       setActiveGuides([]);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleEnd);
+    window.addEventListener('touchcancel', handleEnd);
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handleEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleEnd);
+      window.removeEventListener('touchcancel', handleEnd);
     };
-  }, [isDragging, isResizing, isDraggingText, dragStart, textDragStart, resizeStart, computedScale, onUpdate, slide.id]);
+  }, [isDragging, isResizing, isDraggingText, pinchStartDist, dragStart, textDragStart, resizeStart, computedScale, onUpdate, slide.id, width, height, imageSize, slide.imageScale, pinchStartScale]);
 
   const renderImage = (layer: 'front' | 'back') => {
     if (!slide.image || slide.imageLayer !== layer) return null;
@@ -291,8 +250,6 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
           zIndex: (isDragging || isResizing || pinchStartDist !== null) ? 50 : (layer === 'back' ? 5 : 15),
         }}
         onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         <img 
           ref={imageRef}
@@ -394,7 +351,7 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
           className={`
             absolute text-[60px] leading-tight font-bold pointer-events-auto
             max-w-[80%] outline-none border-2 border-transparent rounded-lg p-2
-            ${onUpdate ? 'hover:border-white/20 cursor-move' : ''}
+            ${onUpdate ? 'hover:border-white/20 cursor-move touch-none' : ''}
             ${getAlignmentClasses('title')}
             empty:before:content-['Title'] empty:before:opacity-30
             z-10
@@ -421,7 +378,7 @@ export function Slide({ slide, index, settings, scale: propScale, isActive, onUp
           className={`
             absolute text-[40px] leading-snug font-medium opacity-90 pointer-events-auto
             max-w-[80%] outline-none border-2 border-transparent rounded-lg p-2
-            ${onUpdate ? 'hover:border-white/20 cursor-move' : ''}
+            ${onUpdate ? 'hover:border-white/20 cursor-move touch-none' : ''}
             ${getAlignmentClasses('body')}
             empty:before:content-['Body_Text'] empty:before:opacity-30
             z-10

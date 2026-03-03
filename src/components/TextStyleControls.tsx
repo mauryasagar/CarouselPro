@@ -62,24 +62,24 @@ export function TextStyleControls({ label, value = {}, onChange }: TextStyleCont
         <div className="flex bg-gray-50 rounded-lg border border-gray-200 p-1 gap-1 flex-1 justify-center">
           <button 
             onClick={() => updateStyle({ fontWeight: value.fontWeight === 'bold' ? 'normal' : 'bold' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.fontWeight === 'bold' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.fontWeight === 'bold' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Bold"
           >
-            <Bold className="w-4 h-4" />
+            <Bold className="w-5 h-5" />
           </button>
           <button 
             onClick={() => updateStyle({ fontStyle: value.fontStyle === 'italic' ? 'normal' : 'italic' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.fontStyle === 'italic' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.fontStyle === 'italic' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Italic"
           >
-            <Italic className="w-4 h-4" />
+            <Italic className="w-5 h-5" />
           </button>
           <button 
             onClick={() => updateStyle({ textDecoration: value.textDecoration === 'underline' ? 'none' : 'underline' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textDecoration === 'underline' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textDecoration === 'underline' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Underline"
           >
-            <Underline className="w-4 h-4" />
+            <Underline className="w-5 h-5" />
           </button>
         </div>
 
@@ -87,24 +87,24 @@ export function TextStyleControls({ label, value = {}, onChange }: TextStyleCont
         <div className="flex bg-gray-50 rounded-lg border border-gray-200 p-1 gap-1 flex-1 justify-center">
           <button 
             onClick={() => updateStyle({ textAlign: 'left' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'left' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'left' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Align Left"
           >
-            <AlignLeft className="w-4 h-4" />
+            <AlignLeft className="w-5 h-5" />
           </button>
           <button 
             onClick={() => updateStyle({ textAlign: 'center' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'center' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'center' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Align Center"
           >
-            <AlignCenter className="w-4 h-4" />
+            <AlignCenter className="w-5 h-5" />
           </button>
           <button 
             onClick={() => updateStyle({ textAlign: 'right' })}
-            className={`p-1.5 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'right' ? 'bg-white shadow-sm text-black' : 'text-gray-400'}`}
+            className={`p-2 rounded-md flex-1 flex justify-center hover:bg-white hover:shadow-sm transition-all ${value.textAlign === 'right' ? 'bg-white shadow-sm text-black' : 'text-gray-900'}`}
             title="Align Right"
           >
-            <AlignRight className="w-4 h-4" />
+            <AlignRight className="w-5 h-5" />
           </button>
         </div>
       </div>
