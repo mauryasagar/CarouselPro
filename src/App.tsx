@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generatePDF } from './lib/pdf';
+import { exportSlides, ExportFormat } from './lib/export';
 import { Slide } from './components/Slide';
 import { DesignSettings, DIMENSIONS, TEMPLATES, TemplateType, AspectRatio, TextLayout, SlideType, SlideContent, TextStyle } from './lib/types';
 import { Loader2, Download, Plus, Trash2, LayoutTemplate, Monitor, AlignLeft, AlignCenter, AlignRight, Type, Image as ImageIcon, X, ChevronUp, ChevronDown, Copy, Palette, Settings2, Layers, Eye, Edit3, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
@@ -8,6 +8,8 @@ import { TextStyleControls } from './components/TextStyleControls';
 
 export default function App() {
   const [isExporting, setIsExporting] = useState(false);
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
   
   // Style toggle states
   const [showTitleStyle, setShowTitleStyle] = useState(false);
@@ -39,6 +41,9 @@ export default function App() {
       }
       if (bodyStyleRef.current && !bodyStyleRef.current.contains(event.target as Node)) {
         setShowBodyStyle(false);
+      }
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
+        setIsExportMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -163,12 +168,13 @@ export default function App() {
     reader.readAsDataURL(file);
   };
 
-  const handleExport = async () => {
+  const handleExport = async (format: ExportFormat = 'pdf') => {
     if (slides.length === 0) return;
     setIsExporting(true);
+    setIsExportMenuOpen(false);
     await new Promise(resolve => setTimeout(resolve, 100));
     const { width, height } = DIMENSIONS[settings.ratio];
-    await generatePDF(slides.map(s => s.id), width, height);
+    await exportSlides(slides.map(s => s.id), width, height, format);
     setIsExporting(false);
   };
 
@@ -551,17 +557,74 @@ export default function App() {
                   </div>
 
                   {/* Export Section */}
-                  <div className="pt-4 border-t border-gray-100 flex flex-col items-center">
+                  <div className="pt-4 border-t border-gray-100 flex flex-col items-center relative" ref={exportMenuRef}>
                     <button
-                      onClick={handleExport}
+                      onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
                       disabled={slides.length === 0 || isExporting}
                       className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-orange-500 text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm font-bold shadow-lg shadow-purple-500/20"
                     >
                       {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                      {isExporting ? 'Exporting...' : 'Export PDF'}
+                      {isExporting ? 'Exporting...' : 'Export'}
                     </button>
+
+                    {isExportMenuOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        className="absolute bottom-full left-0 mb-2 w-full bg-glass rounded-2xl shadow-2xl border border-white/20 p-1.5 z-50 grid grid-cols-1 gap-1"
+                      >
+                        <button
+                          onClick={() => handleExport('pdf')}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left transition-all hover:bg-white/50 text-gray-700"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600 shrink-0">
+                            <span className="text-[10px] font-black">PDF</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold">PDF Document</span>
+                            <span className="text-[9px] text-gray-400">All slides as single PDF</span>
+                          </div>
+                        </button>
+                        <button
+                          onClick={() => handleExport('png')}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left transition-all hover:bg-white/50 text-gray-700"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <span className="text-[10px] font-black">PNG</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold">PNG Images</span>
+                            <span className="text-[9px] text-gray-400">Individual PNG files</span>
+                          </div>
+                        </button>
+                        <button
+                          onClick={() => handleExport('jpeg')}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left transition-all hover:bg-white/50 text-gray-700"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600 shrink-0">
+                            <span className="text-[10px] font-black">JPG</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold">JPG Images</span>
+                            <span className="text-[9px] text-gray-400">Individual JPG files</span>
+                          </div>
+                        </button>
+                        <button
+                          onClick={() => handleExport('svg')}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-left transition-all hover:bg-white/50 text-gray-700"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                            <span className="text-[10px] font-black">SVG</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold">SVG Vector</span>
+                            <span className="text-[9px] text-gray-400">Scalable vector graphics</span>
+                          </div>
+                        </button>
+                      </motion.div>
+                    )}
                     <p className="text-[10px] text-gray-400 text-center mt-2">
-                      All slides as a single PDF
+                      Choose your preferred format
                     </p>
                   </div>
 
