@@ -243,8 +243,19 @@ export default function App() {
         <div className="flex items-center gap-4">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            animate={{ 
+              opacity: 1, 
+              y: [0, -4, 0],
+            }}
+            transition={{ 
+              opacity: { delay: 0.2 },
+              y: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
+            whileHover={{ scale: 1.05, y: -2 }}
           >
             <a 
               href="https://buymeacoffee.com/insidedeepquote" 
@@ -462,7 +473,7 @@ export default function App() {
                           type="text"
                           value={activeSlide.title}
                           onChange={(e) => handleUpdateSlide(activeSlide.id, { title: e.target.value })}
-                          className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all font-bold text-base shadow-sm"
+                          className="w-full pl-4 pr-20 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all font-bold text-base shadow-sm"
                           placeholder="Title"
                         />
                         {showTitleStyle && (
@@ -491,7 +502,7 @@ export default function App() {
                         value={activeSlide.body}
                         onChange={(e) => handleUpdateSlide(activeSlide.id, { body: e.target.value })}
                         rows={4}
-                        className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none text-sm flex-1 shadow-sm"
+                        className="w-full pl-4 pr-20 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none text-sm flex-1 shadow-sm"
                         placeholder="Body Text"
                       />
                       {showBodyStyle && (
