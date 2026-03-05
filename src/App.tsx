@@ -226,19 +226,60 @@ export default function App() {
     <div className="min-h-screen md:h-screen flex flex-col bg-mesh text-gray-900 font-sans md:overflow-hidden">
       {/* Top Bar */}
       <header className="relative h-14 bg-glass border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-20">
-        <div className="flex items-center gap-2">
+        <motion.div 
+          className="flex items-center gap-2 cursor-pointer group"
+          whileHover="hover"
+          initial="initial"
+        >
           <div className="relative w-8 h-8 flex items-center justify-center">
             {/* Background Card */}
-            <div className="absolute inset-0 border-2 border-purple-500 rounded-lg transform -translate-x-1 -translate-y-1 rotate-[-6deg] opacity-40"></div>
+            <motion.div 
+              variants={{
+                initial: { x: -4, y: -4, rotate: -6, opacity: 0.4 },
+                hover: { x: -6, y: -6, rotate: -12, opacity: 0.6 }
+              }}
+              className="absolute inset-0 border-2 border-purple-500 rounded-lg"
+            ></motion.div>
             {/* Middle Card */}
-            <div className="absolute inset-0 border-2 border-orange-500 rounded-lg transform translate-x-0.5 translate-y-0.5 rotate-[3deg] opacity-60"></div>
+            <motion.div 
+              variants={{
+                initial: { x: 2, y: 2, rotate: 3, opacity: 0.6 },
+                hover: { x: 4, y: 4, rotate: 6, opacity: 0.8 }
+              }}
+              className="absolute inset-0 border-2 border-orange-500 rounded-lg"
+            ></motion.div>
             {/* Front Card */}
-            <div className="absolute inset-0 bg-white border-2 border-purple-600 rounded-lg shadow-sm flex items-center justify-center">
-              <div className="w-3 h-3 bg-gradient-to-br from-purple-600 to-orange-500 rounded-[2px]"></div>
-            </div>
+            <motion.div 
+              variants={{
+                initial: { scale: 1 },
+                hover: { scale: 1.1, rotate: -2 }
+              }}
+              className="absolute inset-0 bg-white border-2 border-purple-600 rounded-lg shadow-sm flex items-center justify-center"
+            >
+              <motion.div 
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 90, 0]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="w-3 h-3 bg-gradient-to-br from-purple-600 to-orange-500 rounded-[2px]"
+              ></motion.div>
+            </motion.div>
           </div>
-          <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-orange-500">CarouselPro</span>
-        </div>
+          <motion.span 
+            variants={{
+              initial: { x: 0 },
+              hover: { x: 2 }
+            }}
+            className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-orange-500"
+          >
+            CarouselPro
+          </motion.span>
+        </motion.div>
         
         <div className="flex items-center gap-4">
           <motion.div
