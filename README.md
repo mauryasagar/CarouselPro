@@ -6,7 +6,7 @@
 
 This contains everything you need to run your app locally.
 
-# Website ![Link](https://carousel-pro-g9bn.vercel.app/)
+# Website - [Link](https://carousel-pro-g9bn.vercel.app/)
 
 View your app in AI Studio: https://ai.studio/apps/44a242c6-3e49-4954-a394-82306d779df1
 
